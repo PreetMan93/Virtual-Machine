@@ -1,8 +1,17 @@
 #include "vm.h"
 
 int main() {
+  //create virtual machine
   VM virtual_machine;
-  std::vector<uint16_t> program{3,4,0x4001, 0x4000};
+
+  //write program
+  std::vector<uint16_t> program{
+    0b0001000000000000, //LOAD
+    0b0010000000000000, //ADD
+    0b0000000000000000 //Halt
+  };
+
+  //load program into VM memory and run the VM
   virtual_machine.load_program(program);
   virtual_machine.run();
   return 0;

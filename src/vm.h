@@ -5,22 +5,35 @@
 #include <array>
 #include <vector>
 
-enum{
-  R0,
-  R1,
-  R2,
-  IM, //where immediate values will be stored
-  PC, //program counter
-  NUM_REGISTERS
-};
+/* Instruction set architecture
+ *   - each word is 16 bits wide
+ *   - the first 4 bits = opcode
+ *   - remaining 12 bits are used for operands 
+ *
+ * Opcodes
+ *   - 0000 => HALT , which will stop the program execution
+ *   - 0001 => LOAD , used to load immediate values into registers
+ *   - 0010 => ADD , which will add two registers, and store the results in a third register
+ */
 
 class VM {
+
+  enum{
+    R0,
+    R1,
+    R2,
+    IR, //instruction register, where fetched instruction will be stored
+    OP, //opcode register, where decoded opcode will be stored
+    IM, //where immediate values will be stored
+    PC, //program counter
+    NUM_REGISTERS
+  };
 
   std::array<uint16_t,UINT16_MAX> memory;
   std::array<uint16_t,NUM_REGISTERS> reg;
   
   private:
-  uint16_t fetch();
+  void fetch();
   void decode();
   void execute();
 
