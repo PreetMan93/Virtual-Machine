@@ -14,6 +14,9 @@
  *   - 0000 => HALT , which will stop the program execution
  *   - 0001 => LOAD , used to load immediate values into registers
  *   - 0010 => ADD , which will add two registers, and store the results in a third register
+ *
+ * Operands
+ *   - LOAD => bits 11 to 8 = register , bits 7 to 0 = immediate value
  */
 
 class VM {
@@ -24,7 +27,6 @@ class VM {
     R2,
     IR, //instruction register, where fetched instruction will be stored
     OP, //opcode register, where decoded opcode will be stored
-    IM, //where immediate values will be stored
     PC, //program counter
     NUM_REGISTERS
   };

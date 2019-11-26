@@ -6,7 +6,7 @@ int main() {
 
   //write program
   std::vector<uint16_t> program{
-    0b0001000000000000, //LOAD
+    0b0001000100000001, //LOAD 1 into Register 1
     0b0010000000000000, //ADD
     0b0000000000000000 //Halt
   };
