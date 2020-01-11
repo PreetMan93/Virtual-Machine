@@ -14,38 +14,47 @@ void VM::fetch() {
 void VM::decode() {
   //decode opcode, and store in opcode register
   reg[OP] = (reg[IR] & 0b1111000000000000) >> 12;
+
+  //decode destination register (ADD, AND (TODO) , NOT (TODO) all use same bits as destination_register)
+  destination_register = (reg[IR] & 0b0000111100000000) >> 8;
+
+  //decode the rest of the instruction specifically depending on operation being performed
+  switch(reg[OP]) { 
+    case 0 : //HALT
+      break;
+    
+    case 1 : { //LOAD
+      //get immediate value (bits 7 to 0)
+      immediate_value = (reg[IR] & 0b0000000011111111); 
+      break;
+    }
+    
+    case 2 : { //ADD
+      source_register_1 = (reg[IR] & 0b0000000011110000) >> 4;
+      source_register_2 = (reg[IR] & 0b0000000000001111);
+      break;
+    }
+  }
 }
 
 void VM::execute() {
-  switch(reg[OP]) {
-    
+  switch(reg[OP]) { 
     case 0 :
       std::cout << "HALT" << std::endl;
       break;
     
     case 1 : { //LOAD
-
-      //get immediate value (bits 7 to 0)
-      uint16_t immediate_value = (reg[IR] & 0b0000000011111111); 
-      
-      //check if destination register (bits 11 to 8) is valid (must map to R0, R1 or R2)
-      uint16_t destination_register = (reg[IR] & 0b0000111100000000) >> 8;
-      if (destination_register == 0 || destination_register == 1 || destination_register == 2) {
-        reg[destination_register] = immediate_value;
-        std::cout << "LOAD " << immediate_value << " into " << "R" << destination_register << std::endl;
-        std::cout << "Value now in R" << destination_register << ": " << reg[destination_register] << std::endl; 
-      } 
-      else {
-        std::cout << "Invalid destination register" << std::endl;
-        reg[OP] = 0; //halt the program
-      }
-
+      reg[destination_register] = immediate_value;
+      std::cout << "LOAD " << immediate_value << " into " << "R" << destination_register << std::endl;
       break;
     }
     
-    case 2 :
-      std::cout << "ADD" << std::endl;
+    case 2 : { //ADD
+      reg[destination_register] = reg[source_register_1] + reg[source_register_2];
+      std::cout << "ADD " << "R" << source_register_1 << " + " << "R" << source_register_2 << " into " << "R" << destination_register << std::endl;
+      std::cout << "R" << destination_register << " = " << reg[destination_register] << std::endl;
       break;
+    }
   }
 }
 
